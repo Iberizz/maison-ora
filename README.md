@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍽️ Maison Ora
 
-## Getting Started
+> Digital experience for a modern gastronomic brand.  
+> Elegant, minimal, and performance-driven.
 
-First, run the development server:
+---
+
+## ✨ Overview
+
+Maison Ora is a high-end gastronomic website built with a strong focus on **design precision**, **scalability**, and **clean architecture**.
+
+The project follows a strict separation between **UI**, **logic**, and **types**, ensuring long-term maintainability and team scalability.
+
+---
+
+## 🧱 Tech Stack
+
+- **Next.js (App Router)**
+- **TypeScript**
+- **Tailwind CSS**
+- Modular architecture (UI / Sections / Hooks)
+- Backend-ready (Supabase integration planned)
+
+---
+
+## 🎨 Design System
+
+A refined palette inspired by fine dining aesthetics:
+
+| Role              | Color       |
+|------------------|------------|
+| Background       | `#FAF8F5`  |
+| Primary Text     | `#0F0E0D`  |
+| Accent (Gold)    | `#C9A96E`  |
+| Neutral Surface  | `#E8E4DC`  |
+| Secondary Text   | `#6B6560`  |
+
+---
+
+## 🧠 Architecture Philosophy
+
+Strict separation of concerns:
+
+- **UI is dumb**
+- **Hooks contain logic**
+- **Types are centralized**
+
+
+---
+
+## ⚙️ Development Rules
+
+| File Type        | Responsibility                  |
+|-----------------|--------------------------------|
+| `.tsx`          | JSX + props only               |
+| `.types.ts`     | Interfaces & types             |
+| `useX.ts`       | State, effects, business logic |
+
+---
+
+## 🎯 Goals
+
+- Deliver a **premium UI/UX**
+- Maintain a **scalable codebase**
+- Ensure **performance-first rendering**
+- Prepare for **dynamic data (Supabase)**
+
+---
+
+## 🚀 Getting Started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+---
+Open:
+http://localhost:3000
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🧩 UI Guidelines
+Tailwind only (no component-level CSS)
+Centralized animations
+Consistent spacing & typography via tokens
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+📁 Naming Conventions
+Components → PascalCase
+Hooks → useSomething
+Types → Something.types.ts
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+🔮 Roadmap
+ Supabase integration
+ Reservation system
+ Dynamic menu (CMS-ready)
+ Advanced animations
+ SEO & Open Graph optimization
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📄 License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+GPL-3.0 license
