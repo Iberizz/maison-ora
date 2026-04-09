@@ -7,7 +7,11 @@ interface KPIs {
     today: number
     pending: number
     confirmed: number
+    cancelled: number
     total: number
+    totalGuests: number
+    conversionRate: number
+    availableItems: number
 }
 
 interface Props {
@@ -16,10 +20,14 @@ interface Props {
 }
 
 const kpiConfig = [
-    { key: 'today', label: 'Réservations ce soir', color: '#C9A96E' },
-    { key: 'pending', label: 'En attente', color: '#EF9F27' },
-    { key: 'confirmed', label: 'Confirmées', color: '#1D9E75' },
-    { key: 'total', label: 'Total réservations', color: 'rgba(250,248,245,0.5)' },
+    { key: 'today',          label: 'Ce soir',           color: '#C9A96E' },
+    { key: 'pending',        label: 'En attente',         color: '#EF9F27' },
+    { key: 'confirmed',      label: 'Confirmées',         color: '#1D9E75' },
+    { key: 'cancelled',      label: 'Annulées',           color: '#E24B4A' },
+    { key: 'total',          label: 'Total réservations', color: 'rgba(250,248,245,0.5)' },
+    { key: 'totalGuests',    label: 'Couverts total',     color: '#C9A96E' },
+    { key: 'conversionRate', label: 'Taux confirmation',  color: '#1D9E75' },
+    { key: 'availableItems', label: 'Plats disponibles',  color: 'rgba(250,248,245,0.5)' },
 ]
 
 const DashboardClient = ({ reservations, kpis }: Props) => {
@@ -86,16 +94,16 @@ const DashboardClient = ({ reservations, kpis }: Props) => {
                 <p className="text-xs tracking-widest uppercase font-light mb-3" style={{ color: 'rgba(250,248,245,0.4)' }}>
                     {kpi.label}
                 </p>
-                <p className="font-serif font-light text-4xl" style={{ color: kpi.color }}>
-                    {kpis[kpi.key as keyof KPIs]}
+                <p className="font-serif font-light text-4xl" style={{color: kpi.color}}>
+                    {kpis[kpi.key as keyof KPIs]}{kpi.key === 'conversionRate' ? '%' : ''}
                 </p>
             </motion.div>
         ))}
     </div>
 
-    <div
-        className="rounded-sm p-6"
-        style={{ backgroundColor: '#1C1C1A', border: '0.5px solid rgba(255,255,255,0.06)' }}
+            <div
+                className="rounded-sm p-6"
+                style={{backgroundColor: '#1C1C1A', border: '0.5px solid rgba(255,255,255,0.06)' }}
     >
         <p className="text-xs tracking-widest uppercase font-light mb-6" style={{ color: 'rgba(250,248,245,0.4)' }}>
             Réservations récentes
