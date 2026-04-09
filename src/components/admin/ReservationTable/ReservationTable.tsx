@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Modal from '@/components/ui/Modal/Modal'
+import { logAction } from '@/lib/supabase/logger'
 
 const statusConfig: Record<string, { label: string, color: string, bg: string }> = {
     pending:   { label: 'En attente',  color: '#EF9F27', bg: 'rgba(239,159,39,0.1)' },
@@ -35,6 +36,13 @@ const ReservationTable = ({ reservations }: { reservations: any[] }) => {
         setLoading(modal.id)
         const supabase = createClient()
         await supabase.from('reservations').update({ status: modal.action }).eq('id', modal.id)
+        await logAction({
+            action: `Réservation ${modal.action === 'confirmed' ? 'confirmée' : 'annulée'}`,
+            entity: 'reservation',
+            entity_id: modal.id ?? undefined,
+            user_email: 'admin@ora.fr',
+            metadata: { name: reservation?.name, date: reservation?.date }
+        })
         setLoading(null)
         closeModal()
         router.refresh()
