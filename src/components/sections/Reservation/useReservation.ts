@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ReservationStep, ReservationData } from './Reservation.types'
+import { createReservation } from '@/lib/supabase/actions/reservation'
 
 const initialData: ReservationData = {
     guests: null,
@@ -13,6 +14,8 @@ const initialData: ReservationData = {
 export const useReservation = () => {
     const [step, setStep] = useState<ReservationStep>(1)
     const [data, setData] = useState<ReservationData>(initialData)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
     const nextStep = () => setStep(prev => Math.min(prev + 1, 4) as ReservationStep)
     const prevStep = () => setStep(prev => Math.max(prev - 1, 1) as ReservationStep)
@@ -28,5 +31,19 @@ export const useReservation = () => {
         return true
     }
 
-    return { step, data, update, nextStep, prevStep, canProceed }
+    const confirm = async () => {
+        setLoading(true)
+        setError(null)
+        try {
+            await createReservation(data)
+            return true
+        } catch (e) {
+            setError('Une erreur est survenue. Veuillez réessayer.')
+            return false
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    return { step, data, update, nextStep, prevStep, canProceed, confirm, loading, error }
 }

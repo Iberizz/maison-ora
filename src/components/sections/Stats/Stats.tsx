@@ -5,7 +5,7 @@ import { useStats } from './useStats'
 import { Stat, StatsProps } from './Stats.types'
 
 const defaultStats: Stat[] = [
-    { value: '4', label: 'Étoiles Michelin' },
+    { value: '3', label: 'Étoiles Michelin' },
     { value: '800', label: 'Expériences vécues' },
     { value: '1', label: 'Restaurant de Paris' },
 ]

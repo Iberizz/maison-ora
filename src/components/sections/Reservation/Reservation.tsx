@@ -16,8 +16,13 @@ const stepVariants = {
 }
 
 const Reservation = () => {
-    const { step, data, update, nextStep, prevStep, canProceed } = useReservation()
+    const { step, data, update, nextStep, prevStep, canProceed, confirm, loading, error } = useReservation()
     const [confirmed, setConfirmed] = useState(false)
+
+    const handleConfirm = async () => {
+        const success = await confirm()
+        if (success) setConfirmed(true)
+    }
 
     return (
         <section className="min-h-screen flex flex-col justify-center py-32 px-6" style={{ backgroundColor: '#0F0E0D' }}>
@@ -191,7 +196,7 @@ const Reservation = () => {
                     ) : <div />}
 
                     <button
-                        onClick={step === 4 ? () => setConfirmed(true) : nextStep}
+                        onClick={step === 4 ? handleConfirm : nextStep}
                         disabled={!canProceed()}
                         className="px-8 py-4 text-xs tracking-widest uppercase font-light transition-all duration-300"
                         style={{
