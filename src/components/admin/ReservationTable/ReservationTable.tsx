@@ -1,10 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 import Modal from '@/components/ui/Modal/Modal'
-import { logAction } from '@/lib/supabase/logger'
+import type { Reservation, ReservationStatus } from '@/components/admin/Reservations/reservations.types'
 
 const statusConfig: Record<string, { label: string, color: string, bg: string }> = {
     pending:   { label: 'En attente',  color: '#EF9F27', bg: 'rgba(239,159,39,0.1)' },
@@ -15,15 +13,19 @@ const statusConfig: Record<string, { label: string, color: string, bg: string }>
 interface ModalState {
     open: boolean
     id: string | null
-    action: 'confirmed' | 'cancelled' | null
+    action: ReservationStatus | null
 }
 
-const ReservationTable = ({ reservations }: { reservations: any[] }) => {
-    const [loading, setLoading] = useState<string | null>(null)
-    const [modal, setModal] = useState<ModalState>({ open: false, id: null, action: null })
-    const router = useRouter()
+interface ReservationTableProps {
+    reservations: Reservation[]
+    loadingId?: string | null
+    onStatusChange?: (id: string, status: ReservationStatus) => Promise<boolean> | boolean
+}
 
-    const openModal = (id: string, action: 'confirmed' | 'cancelled') => {
+const ReservationTable = ({ reservations, loadingId = null, onStatusChange }: ReservationTableProps) => {
+    const [modal, setModal] = useState<ModalState>({ open: false, id: null, action: null })
+
+    const openModal = (id: string, action: ReservationStatus) => {
         setModal({ open: true, id, action })
     }
 
@@ -33,19 +35,9 @@ const ReservationTable = ({ reservations }: { reservations: any[] }) => {
 
     const handleConfirm = async () => {
         if (!modal.id || !modal.action) return
-        setLoading(modal.id)
-        const supabase = createClient()
-        await supabase.from('reservations').update({ status: modal.action }).eq('id', modal.id)
-        await logAction({
-            action: `Réservation ${modal.action === 'confirmed' ? 'confirmée' : 'annulée'}`,
-            entity: 'reservation',
-            entity_id: modal.id ?? undefined,
-            user_email: 'admin@ora.fr',
-            metadata: { name: reservation?.name, date: reservation?.date }
-        })
-        setLoading(null)
+        const updated = await onStatusChange?.(modal.id, modal.action)
+        if (updated === false) return
         closeModal()
-        router.refresh()
     }
 
     if (!reservations.length) return (
@@ -90,7 +82,7 @@ const ReservationTable = ({ reservations }: { reservations: any[] }) => {
                                     {r.status !== 'confirmed' && (
                                         <button
                                             onClick={() => openModal(r.id, 'confirmed')}
-                                            disabled={loading === r.id}
+                                            disabled={loadingId === r.id}
                                             className="text-xs tracking-widest uppercase font-light transition-all duration-200"
                                             style={{ color: '#1D9E75' }}
                                         >
@@ -100,7 +92,7 @@ const ReservationTable = ({ reservations }: { reservations: any[] }) => {
                                     {r.status !== 'cancelled' && (
                                         <button
                                             onClick={() => openModal(r.id, 'cancelled')}
-                                            disabled={loading === r.id}
+                                            disabled={loadingId === r.id}
                                             className="text-xs tracking-widest uppercase font-light transition-all duration-200"
                                             style={{ color: '#E24B4A' }}
                                         >
@@ -132,14 +124,14 @@ const ReservationTable = ({ reservations }: { reservations: any[] }) => {
                     <div className="flex gap-4">
                         <button
                             onClick={handleConfirm}
-                            disabled={!!loading}
+                            disabled={!!loadingId}
                             className="px-6 py-3 text-xs tracking-widest uppercase font-light transition-all duration-200"
                             style={{
                                 backgroundColor: modal.action === 'confirmed' ? '#1D9E75' : '#E24B4A',
                                 color: '#FAF8F5',
                             }}
                         >
-                            {loading ? 'En cours...' : `Oui, ${actionLabel}`}
+                            {loadingId ? 'En cours...' : `Oui, ${actionLabel}`}
                         </button>
                         <button
                             onClick={closeModal}

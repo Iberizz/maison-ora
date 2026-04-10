@@ -4,38 +4,30 @@ import DashboardClient from "@/components/admin/Dashboard/DashboardClient";
 export default async function AdminPage() {
     const supabase = await createServerSupabaseClient()
 
-    const today = new Date().toISOString().split('T')[0]
-
     const { data: reservations } = await supabase
         .from('reservations')
         .select('*')
         .order('created_at', { ascending: false })
 
-    const { data: menuItems } = await supabase
-        .from('menu_items')
-        .select('id, available')
-
-    const todayRes = reservations?.filter(r => r.date === today) ?? []
-    const pending = reservations?.filter(r => r.status === 'pending') ?? []
-    const confirmed = reservations?.filter(r => r.status === 'confirmed') ?? []
-    const cancelled = reservations?.filter(r => r.status === 'cancelled') ?? []
-    const totalGuests = reservations?.reduce((acc, r) => acc + (r.guests ?? 0), 0) ?? 0
-    const availableItems = menuItems?.filter(i => i.available).length ?? 0
+    const [{ count: totalMessages }, { count: newMessages }, { count: totalOrders }, { count: pendingOrders }, { count: totalMenuItems }, { count: availableMenuItems }] = await Promise.all([
+        supabase.from('contact_messages').select('*', { count: 'exact', head: true }),
+        supabase.from('contact_messages').select('*', { count: 'exact', head: true }).eq('status', 'new'),
+        supabase.from('orders').select('*', { count: 'exact', head: true }),
+        supabase.from('orders').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+        supabase.from('menu_items').select('*', { count: 'exact', head: true }),
+        supabase.from('menu_items').select('*', { count: 'exact', head: true }).eq('available', true),
+    ])
 
     return (
         <DashboardClient
             reservations={reservations ?? []}
-            kpis={{
-                today: todayRes.length,
-                pending: pending.length,
-                confirmed: confirmed.length,
-                cancelled: cancelled.length,
-                total: reservations?.length ?? 0,
-                totalGuests,
-                availableItems,
-                conversionRate: reservations?.length
-                    ? Math.round((confirmed.length / reservations.length) * 100)
-                    : 0,
+            overview={{
+                totalMessages: totalMessages ?? 0,
+                newMessages: newMessages ?? 0,
+                totalOrders: totalOrders ?? 0,
+                pendingOrders: pendingOrders ?? 0,
+                totalMenuItems: totalMenuItems ?? 0,
+                availableMenuItems: availableMenuItems ?? 0,
             }}
         />
     )

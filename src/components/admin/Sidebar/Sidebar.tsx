@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 const nav = [
     { label: 'Dashboard', href: '/admin', icon: '▪' },
     { label: 'Réservations', href: '/admin/reservations', icon: '▪' },
+    { label: 'Messages', href: '/admin/messages', icon: '▪' },
     { label: 'Clients', href: '/admin/clients', icon: '▪' },
     { label: 'Menu', href: '/admin/menu', icon: '▪' },
     { label: 'Commandes', href: '/admin/commandes', icon: '▪' },

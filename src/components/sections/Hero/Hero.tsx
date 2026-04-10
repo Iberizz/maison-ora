@@ -1,4 +1,7 @@
+'use client'
+
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button/Button'
 import { HeroProps } from './Hero.types'
 
@@ -7,6 +10,8 @@ const Hero = ({
                   subtitle = 'Une cuisine française contemporaine — intime, précise, mémorable.',
                   imageSrc = '/images/hero.png',
               }: HeroProps) => {
+    const router = useRouter()
+
     return (
         <section className="relative h-screen w-full overflow-hidden">
             <Image
@@ -32,8 +37,18 @@ const Hero = ({
                 </p>
 
                 <div className="flex items-center gap-4">
-                    <Button label="Réserver une table" size="lg" variant="primary"/>
-                    <Button label="Découvrir le menu" size="lg" variant="secondary"/>
+                    <Button
+                        label="Réserver une table"
+                        size="lg"
+                        variant="primary"
+                        onClick={() => router.push('/#reservation')}
+                    />
+                    <Button
+                        label="Découvrir le menu"
+                        size="lg"
+                        variant="secondary"
+                        onClick={() => router.push('/menu')}
+                    />
                 </div>
             </div>
         </section>

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useReservation } from './useReservation'
 import Calendar from './Calendar'
 import Modal from '@/components/ui/Modal/Modal'
-import {useState} from "react";
+import { useState } from 'react'
 
 const GUESTS = [1, 2, 3, 4, 5, 6]
 const TIMES = ['19h00', '19h30', '20h00', '20h30', '21h00', '21h30']
@@ -16,7 +16,7 @@ const stepVariants = {
 }
 
 const Reservation = () => {
-    const { step, data, update, nextStep, prevStep, canProceed, confirm, loading, error } = useReservation()
+    const { step, data, update, nextStep, prevStep, canProceed, confirm, loading, error, getFieldError } = useReservation()
     const [confirmed, setConfirmed] = useState(false)
 
     const handleConfirm = async () => {
@@ -24,8 +24,14 @@ const Reservation = () => {
         if (success) setConfirmed(true)
     }
 
+    const identityFields = [
+        { key: 'name', label: 'Nom complet', type: 'text' },
+        { key: 'email', label: 'Adresse email', type: 'email' },
+        { key: 'phone', label: 'Téléphone', type: 'tel' },
+    ] as const
+
     return (
-        <section className="min-h-screen flex flex-col justify-center py-32 px-6" style={{ backgroundColor: '#0F0E0D' }}>
+        <section id="reservation" className="min-h-screen flex flex-col justify-center py-32 px-6" style={{ backgroundColor: '#0F0E0D' }}>
             <div className="max-w-2xl mx-auto w-full">
 
                 <motion.div
@@ -130,11 +136,7 @@ const Reservation = () => {
                             <p className="text-sm tracking-widest uppercase font-light" style={{ color: 'rgba(250,248,245,0.5)' }}>
                                 Qui êtes-vous ?
                             </p>
-                            {[
-                                { key: 'name', label: 'Nom complet', type: 'text' },
-                                { key: 'email', label: 'Adresse email', type: 'email' },
-                                { key: 'phone', label: 'Téléphone', type: 'tel' },
-                            ].map(field => (
+                            {identityFields.map(field => (
                                 <div key={field.key}>
                                     <label className="text-xs tracking-widest uppercase font-light block mb-3" style={{ color: '#C9A96E' }}>
                                         {field.label}
@@ -143,12 +145,19 @@ const Reservation = () => {
                                         type={field.type}
                                         value={data[field.key as keyof typeof data] as string}
                                         onChange={e => update({ [field.key]: e.target.value })}
+                                        required
+                                        aria-invalid={Boolean(getFieldError(field.key))}
                                         className="w-full bg-transparent font-light text-lg pb-3 outline-none transition-all duration-300"
                                         style={{
-                                            borderBottom: '1px solid rgba(250,248,245,0.2)',
+                                            borderBottom: `1px solid ${getFieldError(field.key) ? '#B34B4B' : 'rgba(250,248,245,0.2)'}`,
                                             color: '#FAF8F5',
                                         }}
                                     />
+                                    {getFieldError(field.key) && (
+                                        <p className="text-xs mt-2" style={{ color: '#B34B4B' }}>
+                                            {getFieldError(field.key)}
+                                        </p>
+                                    )}
                                 </div>
                             ))}
                         </motion.div>
@@ -184,6 +193,12 @@ const Reservation = () => {
                     )}
                 </AnimatePresence>
 
+                {error && (
+                    <p className="mt-8 text-sm font-light" style={{ color: '#B34B4B' }}>
+                        {error}
+                    </p>
+                )}
+
                 <div className="flex justify-between items-center mt-16">
                     {step > 1 ? (
                         <button
@@ -197,15 +212,15 @@ const Reservation = () => {
 
                     <button
                         onClick={step === 4 ? handleConfirm : nextStep}
-                        disabled={!canProceed()}
+                        disabled={!canProceed() || loading}
                         className="px-8 py-4 text-xs tracking-widest uppercase font-light transition-all duration-300"
                         style={{
                             border: '1px solid #C9A96E',
-                            color: canProceed() ? '#C9A96E' : 'rgba(201,169,110,0.3)',
-                            cursor: canProceed() ? 'pointer' : 'not-allowed',
+                            color: canProceed() && !loading ? '#C9A96E' : 'rgba(201,169,110,0.3)',
+                            cursor: canProceed() && !loading ? 'pointer' : 'not-allowed',
                         }}
                     >
-                        {step === 4 ? 'Confirmer la réservation' : 'Continuer'}
+                        {loading ? 'Envoi...' : step === 4 ? 'Confirmer la réservation' : 'Continuer'}
                     </button>
                 </div>
             </div>

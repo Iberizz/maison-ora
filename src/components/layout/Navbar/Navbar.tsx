@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { NavbarProps } from './Navbar.types'
 import { useNavbar } from './useNavbar'
 import Button from '@/components/ui/Button/Button'
+import { usePathname, useRouter } from 'next/navigation'
 
 const defaultLinks = [
     { label: 'Menu', href: '/menu' },
@@ -13,17 +14,22 @@ const defaultLinks = [
 ]
 
 const Navbar = ({ links = defaultLinks }: NavbarProps) => {
-    const { scrolled, hoveredLink, setHoveredLink } = useNavbar()
+    const { scrolled, hoveredLink, setHoveredLink, showBackoffice } = useNavbar()
+    const pathname = usePathname()
+    const router = useRouter()
+
+    const isHomePage = pathname != '/'
+    const isScrolled = scrolled || isHomePage
 
     return (
         <header className={cn(
             'fixed top-0 left-0 right-0 z-50 transition-all duration-400',
-            scrolled ? 'bg-cream border-b border-border py-4' : 'bg-transparent py-6'
+            isScrolled ? 'bg-cream border-b border-border py-4' : 'bg-transparent py-6'
         )}>
             <nav className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                 <Link href="/" className={cn(
                     'font-serif text-xl tracking-widest transition-colors duration-400',
-                    scrolled ? 'text-dark' : 'text-cream'
+                    isScrolled ? 'text-dark' : 'text-cream'
                 )}>
                     Maison Ōra
                 </Link>
@@ -37,7 +43,7 @@ const Navbar = ({ links = defaultLinks }: NavbarProps) => {
                                 onMouseLeave={() => setHoveredLink(null)}
                                 className="text-xs tracking-widest uppercase font-light relative group"
                                 style={{
-                                    color: scrolled ? '#6B6560' : 'rgba(250,248,245,0.7)',
+                                    color: isScrolled ? '#6B6560' : 'rgba(250,248,245,0.7)',
                                 }}
                             >
                                 {link.label}
@@ -50,12 +56,26 @@ const Navbar = ({ links = defaultLinks }: NavbarProps) => {
                             </Link>
                         </li>
                     ))}
+                    {showBackoffice && (
+                        <li>
+                            <Link
+                                href="/admin"
+                                className="text-xs tracking-widest uppercase font-light relative group"
+                                style={{
+                                    color: isScrolled ? '#6B6560' : 'rgba(250,248,245,0.7)',
+                                }}
+                            >
+                                Backoffice
+                            </Link>
+                        </li>
+                    )}
                 </ul>
 
                 <Button
                     label="Réserver"
                     size="sm"
-                    variant={scrolled ? 'primary' : 'secondary'}
+                    variant={isScrolled ? 'primary' : 'secondary'}
+                    onClick={() => router.push('/#reservation')}
                 />
             </nav>
         </header>

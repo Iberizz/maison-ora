@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import ReservationTable from '@/components/admin/ReservationTable/ReservationTable'
+import { useReservations } from '@/components/admin/Reservations/useReservations'
+import type { Reservation } from '@/components/admin/Reservations/reservations.types'
 
 const statusFilters = [
     { key: 'all', label: 'Toutes' },
@@ -10,7 +12,8 @@ const statusFilters = [
     { key: 'cancelled', label: 'Annulées' },
 ]
 
-const ReservationsClient = ({ reservations }: { reservations: any[] }) => {
+const ReservationsClient = ({ reservations: initialReservations }: { reservations: Reservation[] }) => {
+    const { reservations, updatingId, error, updateReservationStatus } = useReservations(initialReservations)
     const [status, setStatus] = useState('all')
     const [search, setSearch] = useState('')
     const [date, setDate] = useState('')
@@ -80,7 +83,16 @@ const ReservationsClient = ({ reservations }: { reservations: any[] }) => {
                 className="rounded-sm p-6"
                 style={{ backgroundColor: '#1C1C1A', border: '0.5px solid rgba(255,255,255,0.06)' }}
             >
-                <ReservationTable reservations={filtered} />
+                {error && (
+                    <p className="mb-4 text-sm" style={{ color: '#E24B4A' }}>
+                        {error}
+                    </p>
+                )}
+                <ReservationTable
+                    reservations={filtered}
+                    loadingId={updatingId}
+                    onStatusChange={updateReservationStatus}
+                />
             </div>
         </div>
     )

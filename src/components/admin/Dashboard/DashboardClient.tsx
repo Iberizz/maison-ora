@@ -2,21 +2,19 @@
 
 import { motion } from 'framer-motion'
 import ReservationTable from '@/components/admin/ReservationTable/ReservationTable'
-
-interface KPIs {
-    today: number
-    pending: number
-    confirmed: number
-    cancelled: number
-    total: number
-    totalGuests: number
-    conversionRate: number
-    availableItems: number
-}
+import { useReservations } from '@/components/admin/Reservations/useReservations'
+import type { Reservation } from '@/components/admin/Reservations/reservations.types'
 
 interface Props {
-    reservations: any[]
-    kpis: KPIs
+    reservations: Reservation[]
+    overview: {
+        totalMessages: number
+        newMessages: number
+        totalOrders: number
+        pendingOrders: number
+        totalMenuItems: number
+        availableMenuItems: number
+    }
 }
 
 const kpiConfig = [
@@ -27,10 +25,11 @@ const kpiConfig = [
     { key: 'total',          label: 'Total réservations', color: 'rgba(250,248,245,0.5)' },
     { key: 'totalGuests',    label: 'Couverts total',     color: '#C9A96E' },
     { key: 'conversionRate', label: 'Taux confirmation',  color: '#1D9E75' },
-    { key: 'availableItems', label: 'Plats disponibles',  color: 'rgba(250,248,245,0.5)' },
 ]
 
-const DashboardClient = ({ reservations, kpis }: Props) => {
+const DashboardClient = ({ reservations: initialReservations, overview }: Props) => {
+    const { reservations, metrics, updatingId, error, updateReservationStatus } = useReservations(initialReservations)
+    const recentReservations = reservations.slice(0, 10)
     const today = new Date().toLocaleDateString('fr-FR', {
         weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
     })
@@ -42,7 +41,7 @@ const DashboardClient = ({ reservations, kpis }: Props) => {
                     <h1 className="font-serif font-light text-3xl mb-1" style={{ color: '#FAF8F5' }}>
                         Dashboard
                     </h1>
-                    <p className="text-xs tracking-widest uppercase font-light capitalize" style={{ color: 'rgba(250,248,245,0.4)' }}>
+                    <p className="text-xs tracking-widest capitalize font-light" style={{ color: 'rgba(250,248,245,0.4)' }}>
                         {today}
                     </p>
                 </div>
@@ -95,11 +94,35 @@ const DashboardClient = ({ reservations, kpis }: Props) => {
                     {kpi.label}
                 </p>
                 <p className="font-serif font-light text-4xl" style={{color: kpi.color}}>
-                    {kpis[kpi.key as keyof KPIs]}{kpi.key === 'conversionRate' ? '%' : ''}
+                    {metrics[kpi.key as keyof typeof metrics]}{kpi.key === 'conversionRate' ? '%' : ''}
                 </p>
             </motion.div>
         ))}
     </div>
+
+            <div className="grid grid-cols-3 gap-4 mb-10">
+                {[
+                    { label: 'Messages', value: `${overview.totalMessages}`, hint: `${overview.newMessages} nouveaux`, color: '#EF9F27' },
+                    { label: 'Commandes', value: `${overview.totalOrders}`, hint: `${overview.pendingOrders} en attente`, color: '#378ADD' },
+                    { label: 'Menu', value: `${overview.availableMenuItems}/${overview.totalMenuItems}`, hint: 'plats disponibles', color: '#1D9E75' },
+                ].map((item) => (
+                    <div
+                        key={item.label}
+                        className="p-5 rounded-sm"
+                        style={{ backgroundColor: '#1C1C1A', border: '0.5px solid rgba(255,255,255,0.06)' }}
+                    >
+                        <p className="text-xs tracking-widest uppercase font-light mb-2" style={{ color: 'rgba(250,248,245,0.4)' }}>
+                            {item.label}
+                        </p>
+                        <p className="font-serif font-light text-3xl mb-1" style={{ color: '#FAF8F5' }}>
+                            {item.value}
+                        </p>
+                        <p className="text-xs font-light" style={{ color: item.color }}>
+                            {item.hint}
+                        </p>
+                    </div>
+                ))}
+            </div>
 
             <div
                 className="rounded-sm p-6"
@@ -108,7 +131,16 @@ const DashboardClient = ({ reservations, kpis }: Props) => {
         <p className="text-xs tracking-widest uppercase font-light mb-6" style={{ color: 'rgba(250,248,245,0.4)' }}>
             Réservations récentes
         </p>
-        <ReservationTable reservations={reservations} />
+        {error && (
+            <p className="mb-4 text-sm" style={{ color: '#E24B4A' }}>
+                {error}
+            </p>
+        )}
+        <ReservationTable
+            reservations={recentReservations}
+            loadingId={updatingId}
+            onStatusChange={updateReservationStatus}
+        />
     </div>
 </div>
 )
