@@ -14,6 +14,7 @@ export default function LoginPage() {
     const handleLogin = async () => {
         setLoading(true)
         setError(null)
+        console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL)
 
         const supabase = createClient()
         const { error } = await supabase.auth.signInWithPassword({ email, password })
