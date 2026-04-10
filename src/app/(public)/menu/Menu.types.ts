@@ -3,27 +3,27 @@
 // --- Supabase raw row (miroir exact de la table menu_items) ---
 export type MenuItemRow = {
     id: string
-    name: string
+    title: string
     description: string | null
     price: number
     category: MenuCategory
-    image_url: string | null
-    is_available: boolean
-    created_at: string
+    image: string | null
+    available: boolean
+    created_at: string | null
 }
 
 // --- Catégories ---
 export type MenuCategory =
-    | 'entrees'
-    | 'plats'
-    | 'desserts'
-    | 'boissons'
+    | 'entree'
+    | 'plat'
+    | 'dessert'
+    | 'boisson'
 
 export const MENU_CATEGORIES: { label: string; value: MenuCategory }[] = [
-    { label: 'Entrées',   value: 'entrees'  },
-    { label: 'Plats',     value: 'plats'    },
-    { label: 'Desserts',  value: 'desserts' },
-    { label: 'Boissons',  value: 'boissons' },
+    { label: 'Entrées',   value: 'entree'  },
+    { label: 'Plats',     value: 'plat'    },
+    { label: 'Desserts',  value: 'dessert' },
+    { label: 'Boissons',  value: 'boisson' },
 ]
 
 // --- Badge disponibilité ---

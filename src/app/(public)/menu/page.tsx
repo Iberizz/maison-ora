@@ -2,8 +2,8 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { cn } from '@/lib/utils'
 import { useMenu } from './useMenu'
 import { MENU_CATEGORIES } from './Menu.types'
 import type { MenuItemRow, CategoryFilterProps } from './Menu.types'
@@ -21,7 +21,10 @@ const ORA = {
 
 // ─── Category Filter — style nav éditoriale ───────────────────────
 function CategoryFilter({ activeCategory, onChange }: CategoryFilterProps) {
-  const all = [{ label: 'Tout', value: 'all' as const }, ...MENU_CATEGORIES]
+  const all: Array<{ label: string; value: CategoryFilterProps['activeCategory'] }> = [
+    { label: 'Tout', value: 'all' },
+    ...MENU_CATEGORIES,
+  ]
 
   return (
       <nav className="flex items-center gap-8 overflow-x-auto scrollbar-hide">
@@ -30,7 +33,7 @@ function CategoryFilter({ activeCategory, onChange }: CategoryFilterProps) {
           return (
               <button
                   key={cat.value}
-                  onClick={() => onChange(cat.value as any)}
+                  onClick={() => onChange(cat.value)}
                   className="relative shrink-0 pb-1 text-xs tracking-[0.25em] uppercase transition-colors duration-300"
                   style={{ color: isActive ? ORA.noir : ORA.muted }}
               >
@@ -67,7 +70,7 @@ function MenuRow({ item, index }: { item: MenuItemRow; index: number }) {
       >
         {/* Ligne principale */}
         <div
-            className="flex items-baseline gap-4 py-5 transition-colors duration-200"
+            className="flex items-center gap-4 py-5 transition-colors duration-200"
             style={{ borderBottom: `1px solid ${ORA.border}` }}
         >
           {/* Numéro */}
@@ -78,16 +81,32 @@ function MenuRow({ item, index }: { item: MenuItemRow; index: number }) {
           {String(index + 1).padStart(2, '0')}
         </span>
 
+          {/* Thumbnail */}
+          {item.image ? (
+              <div className="h-12 w-12 sm:h-14 sm:w-14 overflow-hidden rounded-sm shrink-0 relative">
+                <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    sizes="(min-width: 640px) 56px, 48px"
+                    className="object-cover transition-transform duration-300"
+                    style={{ transform: hovered ? 'scale(1.06)' : 'scale(1)' }}
+                />
+              </div>
+          ) : (
+              <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-sm shrink-0" style={{ backgroundColor: ORA.border }} />
+          )}
+
           {/* Nom du plat */}
           <span
               className="flex-1 text-lg font-normal leading-tight transition-colors duration-200"
               style={{
                 fontFamily: 'var(--font-serif)',
-                color: item.is_available ? ORA.noir : ORA.muted,
+                color: item.available ? ORA.noir : ORA.muted,
               }}
           >
-          {item.name}
-            {!item.is_available && (
+          {item.title}
+            {!item.available && (
                 <span
                     className="ml-3 text-[9px] tracking-[0.2em] uppercase align-middle"
                     style={{ color: ORA.muted }}
@@ -103,7 +122,7 @@ function MenuRow({ item, index }: { item: MenuItemRow; index: number }) {
               style={{ color: ORA.border }}
               aria-hidden
           >
-          {'· '.repeat(60)}
+          {'· '.repeat(40)}
         </span>
 
           {/* Prix */}

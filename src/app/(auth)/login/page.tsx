@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -11,10 +11,20 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false)
     const router = useRouter()
 
+    useEffect(() => {
+        const supabase = createClient()
+
+        const checkSession = async () => {
+            const { data } = await supabase.auth.getSession()
+            if (data.session) router.replace('/admin')
+        }
+
+        checkSession()
+    }, [router])
+
     const handleLogin = async () => {
         setLoading(true)
         setError(null)
-        console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL)
 
         const supabase = createClient()
         const { error } = await supabase.auth.signInWithPassword({ email, password })
@@ -25,7 +35,8 @@ export default function LoginPage() {
             return
         }
 
-        router.push('/admin')
+        router.replace('/admin')
+        router.refresh()
     }
 
     return (

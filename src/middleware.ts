@@ -4,8 +4,9 @@ import { createServerClient } from '@supabase/ssr'
 
 export const middleware = async (request: NextRequest) => {
     const response = await updateSession(request)
+    const pathname = request.nextUrl.pathname
 
-    if (request.nextUrl.pathname.startsWith('/admin')) {
+    if (pathname.startsWith('/admin')) {
         const supabase = createServerClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -22,6 +23,12 @@ export const middleware = async (request: NextRequest) => {
         if (!user) {
             return NextResponse.redirect(new URL('/login', request.url))
         }
+    }
+
+    if (pathname.startsWith('/admin') || pathname.startsWith('/login')) {
+        response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+        response.headers.set('Pragma', 'no-cache')
+        response.headers.set('Expires', '0')
     }
 
     return response
