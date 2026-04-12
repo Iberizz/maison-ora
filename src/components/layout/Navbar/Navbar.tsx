@@ -18,7 +18,7 @@ const Navbar = ({ links = defaultLinks }: NavbarProps) => {
     const pathname = usePathname()
     const router = useRouter()
 
-    const isHomePage = pathname != '/'
+    const isHomePage = pathname === '/contact'
     const isScrolled = scrolled || isHomePage
 
     return (
@@ -29,7 +29,7 @@ const Navbar = ({ links = defaultLinks }: NavbarProps) => {
             <nav className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                 <Link href="/" className={cn(
                     'font-serif text-xl tracking-widest transition-colors duration-400',
-                    isScrolled ? 'text-dark' : 'text-cream'
+                    isScrolled ? 'text-black' : 'text-cream'
                 )}>
                     Maison Ōra
                 </Link>
