@@ -4,14 +4,10 @@ export type StoryMilestone = {
     description: string
 }
 
-export type StoryPillar = {
-    title: string
-    description: string
-}
-
 export type StoryFact = {
     label: string
     value: string
+    subline?: string
 }
 
 export type StoryChapter = {

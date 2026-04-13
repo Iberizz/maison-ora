@@ -18,7 +18,7 @@ const Navbar = ({ links = defaultLinks }: NavbarProps) => {
     const pathname = usePathname()
     const router = useRouter()
 
-    const isHomePage = pathname === '/contact'
+    const isHomePage = pathname === '/rien'
     const isScrolled = scrolled || isHomePage
 
     return (

@@ -1,19 +1,21 @@
-import Navbar from '@/components/layout/Navbar/Navbar'
-import Footer from '@/components/layout/Footer/Footer'
-import StoryPage from '@/components/sections/Story/StoryPage'
-import StoryHero from "@/components/sections/Story/StoryHero";
+'use client'
 
-export default function HistoirePage() {
+import StoryHero from "@/components/sections/Story/StoryHero";
+import StoryNumbers from "@/components/sections/Story/StoryNumbers";
+import StoryChapters from "@/components/sections/Story/StoryChapters";
+import StoryTimeline from "@/components/sections/Story/StoryTimeline";
+import Navbar from "@/components/layout/Navbar/Navbar";
+import Footer from "@/components/layout/Footer/Footer";
+
+export default function StoryPage() {
     return (
-        <>
+        <main className="min-h-screen bg-dark">
             <Navbar />
             <StoryHero />
-            <div>
-                <h1 className="text-center align-center py-24">
-                    Prochainement...
-                </h1>
-            </div>
+            <StoryNumbers />
+            <StoryChapters />
+            <StoryTimeline />
             <Footer />
-        </>
+        </main>
     )
 }

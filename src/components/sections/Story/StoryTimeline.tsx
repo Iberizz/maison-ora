@@ -5,102 +5,100 @@ import Link from 'next/link'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { STORY_MILESTONES, STORY_CLOSING } from './Story.data'
 
-// ─── Ligne verticale animée ───────────────────────────────────────
-
-function TimelineLine() {
-    const ref = useRef<HTMLDivElement>(null)
-    const { scrollYProgress } = useScroll({
-        target: ref,
-        offset: ['start 80%', 'end 20%'],
-    })
-    const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1])
-
-    return (
-        <div ref={ref} className="absolute left-[7px] top-0 bottom-0 w-px overflow-hidden md:left-[119px]">
-            <motion.div
-                className="h-full w-full origin-top"
-                style={{ scaleY, backgroundColor: 'var(--color-gold)', opacity: 0.4 }}
-            />
-        </div>
-    )
-}
-
-// ─── Timeline ─────────────────────────────────────────────────────
+// ─── Timeline horizontale ─────────────────────────────────────────
 
 function Timeline() {
     const ref = useRef<HTMLDivElement>(null)
+    const { scrollYProgress } = useScroll({
+        target: ref,
+        offset: ['start 80%', 'end 40%'],
+    })
+    const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1])
 
     return (
-        <section
-            className="mx-auto max-w-5xl px-6 py-20 lg:px-12 lg:py-28"
-            style={{ backgroundColor: 'var(--color-cream)' }}
-        >
-            <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="mb-12 text-[10px] tracking-[0.35em] uppercase"
-                style={{ color: 'var(--color-gold)' }}
-            >
-                Timeline
-            </motion.p>
+        <section className="bg-cream py-24 lg:py-32 overflow-hidden">
+            <div className="mx-auto max-w-7xl px-6 lg:px-12">
 
-            <div ref={ref} className="relative">
-                <TimelineLine />
+                <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className="eyebrow mb-20"
+                >
+                    Timeline
+                </motion.p>
 
-                <div className="flex flex-col gap-0">
-                    {STORY_MILESTONES.map((item, index) => (
+                {/* Desktop — horizontal */}
+                <div ref={ref} className="hidden lg:block relative">
+
+                    {/* Ligne de base grise */}
+                    <div className="absolute top-[18px] left-0 right-0 h-px bg-border" />
+
+                    {/* Ligne dorée animée */}
+                    <motion.div
+                        className="absolute top-[18px] left-0 right-0 h-px bg-gold origin-left"
+                        style={{ scaleX }}
+                    />
+
+                    {/* Items */}
+                    <div className="grid gap-0" style={{ gridTemplateColumns: `repeat(${STORY_MILESTONES.length}, 1fr)` }}>
+                        {STORY_MILESTONES.map((item, i) => {
+                            const progress = i / (STORY_MILESTONES.length - 1)
+                            const itemVisible = useTransform(scrollYProgress, [progress * 0.7, progress * 0.7 + 0.15], [0, 1])
+
+                            return (
+                                <motion.div
+                                    key={item.year}
+                                    style={{ opacity: itemVisible }}
+                                    className="pt-10 pr-8"
+                                >
+                                    {/* Point */}
+                                    <div className="absolute top-[12px] w-3 h-3 rounded-full bg-gold ring-4 ring-cream" />
+
+                                    <p className="font-serif font-light text-gold text-sm tracking-label mb-3">
+                                        {item.year}
+                                    </p>
+                                    <h3 className="font-serif font-light text-dark text-xl leading-snug mb-2">
+                                        {item.title}
+                                    </h3>
+                                    <p className="text-xs font-light leading-relaxed text-stone">
+                                        {item.description}
+                                    </p>
+                                </motion.div>
+                            )
+                        })}
+                    </div>
+                </div>
+
+                {/* Mobile — vertical */}
+                <div className="lg:hidden relative pl-6">
+                    <div className="absolute left-0 top-0 bottom-0 w-px bg-border" />
+                    <motion.div
+                        className="absolute left-0 top-0 bottom-0 w-px bg-gold origin-top"
+                        initial={{ scaleY: 0 }}
+                        whileInView={{ scaleY: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                    />
+
+                    {STORY_MILESTONES.map((item, i) => (
                         <motion.div
-                            key={`${item.year}-${item.title}`}
-                            initial={{ opacity: 0, x: -20 }}
+                            key={item.year}
+                            initial={{ opacity: 0, x: -16 }}
                             whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true, margin: '-60px' }}
-                            transition={{ duration: 0.5, delay: index * 0.08, ease: [0.25, 0.1, 0.25, 1] }}
-                            className="grid grid-cols-1 gap-4 py-8 md:grid-cols-[120px_1fr] md:gap-10"
-                            style={{ borderBottom: '1px solid var(--color-border)' }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: i * 0.1 }}
+                            className="relative pb-12 last:pb-0"
                         >
-                            {/* Année + point */}
-                            <div className="flex items-start gap-4">
-                                {/* Point doré */}
-                                <div
-                                    className="relative z-10 mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full ring-4"
-                                    style={{
-                                        backgroundColor: 'var(--color-gold)',
-                                        ringColor: 'var(--color-cream)',
-                                        boxShadow: '0 0 0 4px var(--color-cream)',
-                                    }}
-                                />
-                                <span
-                                    className="text-sm font-light tracking-[0.15em]"
-                                    style={{ color: 'var(--color-gold)', fontFamily: 'var(--font-serif)' }}
-                                >
-                  {item.year}
-                </span>
-                            </div>
-
-                            {/* Contenu */}
-                            <div className="pl-7 md:pl-0">
-                                <h3
-                                    className="mb-2 font-light leading-snug"
-                                    style={{
-                                        fontFamily: 'var(--font-serif)',
-                                        color: 'var(--color-dark)',
-                                        fontSize: 'clamp(1.2rem, 2.5vw, 1.6rem)',
-                                    }}
-                                >
-                                    {item.title}
-                                </h3>
-                                <p
-                                    className="text-sm font-light leading-relaxed"
-                                    style={{ color: 'var(--color-stone)' }}
-                                >
-                                    {item.description}
-                                </p>
-                            </div>
+                            <div className="absolute -left-[25px] top-1 w-3 h-3 rounded-full bg-gold ring-4 ring-cream" />
+                            <p className="font-serif text-gold text-sm tracking-label mb-2">{item.year}</p>
+                            <h3 className="font-serif font-light text-dark text-xl mb-2">{item.title}</h3>
+                            <p className="text-xs font-light text-stone leading-relaxed">{item.description}</p>
                         </motion.div>
                     ))}
                 </div>
+
             </div>
         </section>
     )
@@ -110,63 +108,36 @@ function Timeline() {
 
 function StoryCTA() {
     return (
-        <section
-            className="py-28"
-            style={{ backgroundColor: 'var(--color-dark)' }}
-        >
-            <div className="mx-auto max-w-3xl px-6 text-center">
+        <section className="bg-dark py-32">
+            <div className="mx-auto max-w-4xl px-6 text-center">
                 <motion.div
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                 >
-                    <p
-                        className="mb-4 text-[10px] tracking-[0.4em] uppercase"
-                        style={{ color: 'var(--color-gold)' }}
-                    >
-                        Finale
-                    </p>
+                    <p className="eyebrow mb-6">Finale</p>
 
                     <h2
-                        className="mb-5 font-light leading-tight"
-                        style={{
-                            fontFamily: 'var(--font-serif)',
-                            color: 'var(--color-cream)',
-                            fontSize: 'clamp(2.5rem, 6vw, 5rem)',
-                        }}
+                        className="font-serif font-light text-cream leading-tight mb-6"
+                        style={{ fontSize: 'clamp(3rem, 8vw, 7rem)' }}
                     >
                         {STORY_CLOSING.title}
                     </h2>
 
-                    <p
-                        className="mx-auto mb-12 max-w-xl text-sm font-light leading-relaxed"
-                        style={{ color: 'var(--color-stone)' }}
-                    >
+                    <p className="mx-auto mb-14 max-w-xl text-sm font-light leading-relaxed text-stone">
                         {STORY_CLOSING.description}
                     </p>
 
                     {/* Ornament */}
-                    <div className="mb-12 flex items-center justify-center gap-4">
-                        <div className="h-px w-16" style={{ backgroundColor: '#2a2a2a' }} />
-                        <div className="h-1.5 w-1.5 rotate-45" style={{ backgroundColor: 'var(--color-gold)' }} />
-                        <div className="h-px w-16" style={{ backgroundColor: '#2a2a2a' }} />
+                    <div className="flex items-center justify-center gap-4 mb-14">
+                        <span className="h-px w-16 block" style={{ backgroundColor: '#2a2a2a' }} />
+                        <span className="h-1.5 w-1.5 rotate-45 block bg-gold" />
+                        <span className="h-px w-16 block" style={{ backgroundColor: '#2a2a2a' }} />
                     </div>
 
-                    <Link
-                        href="/reservation"
-                        className="inline-flex items-center gap-4 px-12 py-4 text-xs tracking-[0.3em] uppercase transition-all duration-300"
-                        style={{ border: '1px solid var(--color-gold)', color: 'var(--color-gold)' }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = 'var(--color-gold)'
-                            e.currentTarget.style.color = 'var(--color-dark)'
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = 'transparent'
-                            e.currentTarget.style.color = 'var(--color-gold)'
-                        }}
-                    >
-                        <span className="h-px w-5" style={{ backgroundColor: 'currentColor' }} aria-hidden />
+                    <Link href="/reservation" className="btn-ora-gold">
+                        <span className="h-px w-5 bg-current block" aria-hidden />
                         Vivre l'expérience
                     </Link>
                 </motion.div>
@@ -174,8 +145,6 @@ function StoryCTA() {
         </section>
     )
 }
-
-// ─── Export ───────────────────────────────────────────────────────
 
 export default function StoryTimeline() {
     return (

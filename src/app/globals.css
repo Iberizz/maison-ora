@@ -21,19 +21,6 @@
     overflow-x: hidden;
   }
 
-  @layer utilities {
-    .nav-link {
-      transition: color 400ms;
-    }
-    .nav-link:hover {
-      color: var(--color-cream);
-    }
-    .nav-link-scrolled:hover {
-      color: var(--color-dark);
-      opacity: 1;
-    }
-  }
-
   body {
     background-color: var(--color-cream);
     color: var(--color-dark);
@@ -53,51 +40,166 @@
   h3 { font-size: clamp(1.25rem, 3vw, 2rem); }
 }
 
-.rdp {
-  color: #FAF8F5 !important;
+@layer utilities {
+
+  /* ── Navigation ── */
+  .nav-link {
+    transition: color 400ms;
+  }
+  .nav-link:hover {
+    color: var(--color-cream);
+  }
+  .nav-link-scrolled:hover {
+    color: var(--color-dark);
+    opacity: 1;
+  }
+
+  /* ── Couleurs texte ── */
+  .text-cream     { color: var(--color-cream); }
+  .text-cream-alt { color: var(--color-cream-alt); }
+  .text-dark      { color: var(--color-dark); }
+  .text-gold      { color: var(--color-gold); }
+  .text-stone     { color: var(--color-stone); }
+  .text-border    { color: var(--color-border); }
+
+  /* ── Couleurs fond ── */
+  .bg-cream     { background-color: var(--color-cream); }
+  .bg-cream-alt { background-color: var(--color-cream-alt); }
+  .bg-dark      { background-color: var(--color-dark); }
+  .bg-gold      { background-color: var(--color-gold); }
+  .bg-stone     { background-color: var(--color-stone); }
+
+  /* ── Bordures ── */
+  .border-cream     { border-color: var(--color-cream); }
+  .border-cream-alt { border-color: var(--color-cream-alt); }
+  .border-dark      { border-color: var(--color-dark); }
+  .border-gold      { border-color: var(--color-gold); }
+  .border-stone     { border-color: var(--color-stone); }
+  .border-border    { border-color: var(--color-border); }
+
+  /* ── Typographie ── */
+  .font-serif { font-family: var(--font-serif); }
+  .font-sans  { font-family: var(--font-sans); }
+
+  /* ── Easings ── */
+  .ease-ora { transition-timing-function: var(--ease-out); }
+
+  /* ── Opacités sur les couleurs ── */
+  .text-cream\/80  { color: rgba(250, 248, 245, 0.80); }
+  .text-cream\/60  { color: rgba(250, 248, 245, 0.60); }
+  .text-cream\/40  { color: rgba(250, 248, 245, 0.40); }
+  .text-stone\/60  { color: rgba(107, 101, 96, 0.60); }
+  .text-gold\/80   { color: rgba(201, 169, 110, 0.80); }
+  .bg-dark\/60     { background-color: rgba(15, 14, 13, 0.60); }
+  .bg-dark\/80     { background-color: rgba(15, 14, 13, 0.80); }
+  .bg-gold\/10     { background-color: rgba(201, 169, 110, 0.10); }
+  .bg-gold\/15     { background-color: rgba(201, 169, 110, 0.15); }
+  .border-gold\/30 { border-color: rgba(201, 169, 110, 0.30); }
+  .border-border\/50 { border-color: rgba(224, 221, 215, 0.50); }
+
+  /* ── Tracking éditorial ── */
+  .tracking-editorial { letter-spacing: 0.35em; }
+  .tracking-label     { letter-spacing: 0.25em; }
+  .tracking-wide-xl   { letter-spacing: 0.3em; }
+
+  /* ── Utilitaires layout ── */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ── Ligne décorative Ōra ── */
+  .ora-line {
+    display: block;
+    height: 1px;
+    background-color: var(--color-border);
+  }
+  .ora-line-gold {
+    display: block;
+    height: 1px;
+    background-color: var(--color-gold);
+  }
+
+  /* ── Bouton outline Ōra ── */
+  .btn-ora {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 2.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 300;
+    border: 1px solid var(--color-dark);
+    color: var(--color-dark);
+    transition: background-color 300ms, color 300ms;
+  }
+  .btn-ora:hover {
+    background-color: var(--color-dark);
+    color: var(--color-cream);
+  }
+  .btn-ora-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 2.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 300;
+    border: 1px solid var(--color-gold);
+    color: var(--color-gold);
+    transition: background-color 300ms, color 300ms;
+  }
+  .btn-ora-gold:hover {
+    background-color: var(--color-gold);
+    color: var(--color-dark);
+  }
+
+  /* ── Eyebrow label ── */
+  .eyebrow {
+    font-size: 0.625rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    font-weight: 300;
+    color: var(--color-gold);
+  }
+
+  /* ── Ornament Ōra ── */
+  .ora-ornament {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .ora-ornament::before,
+  .ora-ornament::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: var(--color-border);
+  }
 }
 
-.rdp-months {
-  background-color: transparent !important;
-}
-
+/* ── Calendrier rdp ── */
+.rdp { color: #FAF8F5 !important; }
+.rdp-months { background-color: transparent !important; }
 .rdp-caption_label {
   color: #FAF8F5 !important;
   font-family: 'Cormorant Garamond', serif !important;
   font-size: 1.1rem !important;
 }
-
 .rdp-head_cell {
   color: rgba(250,248,245,0.4) !important;
   font-weight: 300 !important;
   font-size: 0.7rem !important;
   letter-spacing: 0.1em !important;
 }
-
-.rdp-day {
-  color: #FAF8F5 !important;
-  font-weight: 300 !important;
-}
-
-.rdp-day_selected {
-  background-color: #C9A96E !important;
-  color: #0F0E0D !important;
-}
-
-.rdp-day_today {
-  color: #C9A96E !important;
-  font-weight: 500 !important;
-}
-
-.rdp-day_disabled {
-  color: rgba(250,248,245,0.15) !important;
-}
-
-.rdp-button:hover:not([disabled]) {
-  background-color: rgba(201,169,110,0.15) !important;
-}
-
-.rdp-nav_button svg {
-  color: #C9A96E !important;
-  fill: #C9A96E !important;
-}
+.rdp-day { color: #FAF8F5 !important; font-weight: 300 !important; }
+.rdp-day_selected { background-color: #C9A96E !important; color: #0F0E0D !important; }
+.rdp-day_today { color: #C9A96E !important; font-weight: 500 !important; }
+.rdp-day_disabled { color: rgba(250,248,245,0.15) !important; }
+.rdp-button:hover:not([disabled]) { background-color: rgba(201,169,110,0.15) !important; }
+.rdp-nav_button svg { color: #C9A96E !important; fill: #C9A96E !important; }
