@@ -4,25 +4,74 @@ import { useRef } from 'react'
 import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { MenuItem } from './Menu.types'
+import Link from "next/link";
 
 const items: MenuItem[] = [
     {
-        title: 'Bar de ligne, écume iodée',
-        description: 'Fèves, concombre de mer, microgreens du jardin',
+        title: 'Homard rôti, beurre noisette',
+        description: 'Purée de céleri, jus corsé, herbes fraîches',
         category: 'Poisson',
-        image: '/images/menu-fish.png',
+        image: '/images/menu-homard.png',
     },
     {
-        title: 'Betterave & truffe noire',
-        description: 'Crème de chou-fleur, fleurs comestibles, graines torréfiées',
+        title: 'Foie gras mi-cuit',
+        description: 'Chutney de figue, brioche toastée, fleur de sel',
+        category: 'Entrée',
+        image: '/images/menu-foie-gras.png',
+    },
+    {
+        title: 'Filet de bœuf, cuisson basse température',
+        description: 'Pommes fondantes, jus réduit, légumes glacés',
+        category: 'Viande',
+        image: '/images/menu-viande.png',
+    },
+    {
+        title: 'Légumes de saison rôtis',
+        description: 'Crème de pois chiches, graines croquantes, herbes du jardin',
         category: 'Végétal',
         image: '/images/menu-vegetal.png',
     },
     {
-        title: 'Sphère chocolat grand cru',
-        description: 'Coulis framboise, feuilletine, feuille d\'or',
+        title: 'Entrée du chef',
+        description: 'Composition autour des produits du marché, textures variées',
+        category: 'Entrée',
+        image: '/images/menu-entree.png',
+    },
+    {
+        title: 'Soufflé chaud au fromage',
+        description: 'Cœur fondant, salade d’herbes, pointe de muscade',
+        category: 'Entrée',
+        image: '/images/menu-soufle.png',
+    },
+    {
+        title: 'Tarte fine aux pommes',
+        description: 'Caramel beurre salé, glace vanille, pâte croustillante',
         category: 'Dessert',
-        image: '/images/menu-dessert.png',
+        image: '/images/menu-tarte.png',
+    },
+    {
+        title: 'Mille-feuille vanille',
+        description: 'Crème légère, feuilletage croustillant, sucre glace',
+        category: 'Dessert',
+        image: '/images/menu-mille-feuille.png',
+    },
+    {
+        title: 'Glace artisanale',
+        description: 'Parfums du moment, éclats gourmands, coulis maison',
+        category: 'Dessert',
+        image: '/images/menu-glace.png',
+    },
+    {
+        title: 'Cocktail signature',
+        description: 'Création du barman, notes fraîches et équilibrées',
+        category: 'Boisson',
+        image: '/images/menu-cocktail.png',
+    },
+    {
+        title: 'Sélection de vins',
+        description: 'Accords mets et vins, choix du sommelier',
+        category: 'Boisson',
+        image: '/images/menu-vin.png',
     },
 ]
 
@@ -98,7 +147,7 @@ const Menu = () => {
         target: containerRef,
         offset: ['start end', 'end start'],
     })
-    const x = useTransform(scrollYProgress, [0, 1], ['15%', '-15%'])
+    const x = useTransform(scrollYProgress, [-0.25, 1], ['100%', '-100%'])
 
     return (
         <section
@@ -122,6 +171,7 @@ const Menu = () => {
                 <h2 style={{ color: '#FAF8F5' }}>La carte</h2>
             </motion.div>
 
+            <Link href="/menu">
             <motion.div
                 style={{ x }}
                 className="flex gap-8 px-16"
@@ -130,6 +180,7 @@ const Menu = () => {
                     <MenuCard key={i} item={item} index={i} />
                 ))}
             </motion.div>
+            </Link>
         </section>
     )
 }
