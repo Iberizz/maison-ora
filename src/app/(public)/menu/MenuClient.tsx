@@ -46,7 +46,7 @@ function MenuCTA() {
                     </p>
 
                     <Link
-                        href="/reservation"
+                        href="/#reservation"
                         className="inline-flex items-center gap-4 px-12 py-4 text-xs tracking-[0.3em] uppercase transition-all duration-400 group"
                         style={{
                             border: '1px solid var(--color-gold)',
