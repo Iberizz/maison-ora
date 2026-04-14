@@ -15,6 +15,7 @@ interface MenuItem {
     price: number
     image: string
     available: boolean
+    is_signature: boolean
     position: number
 }
 
@@ -33,6 +34,7 @@ const emptyForm = {
     price: '',
     image: '',
     available: true,
+    is_signature: false,
 }
 
 const MenuClient = ({ items }: { items: MenuItem[] }) => {
@@ -60,6 +62,7 @@ const MenuClient = ({ items }: { items: MenuItem[] }) => {
             price: item.price.toString(),
             image: item.image ?? '',
             available: item.available,
+            is_signature: item.is_signature ?? false,
         })
         setEditing(item.id)
         setModalOpen(true)
@@ -77,6 +80,7 @@ const MenuClient = ({ items }: { items: MenuItem[] }) => {
             price: parseFloat(form.price),
             image: form.image,
             available: form.available,
+            is_signature: form.is_signature,
         }
 
         if (editing) {
@@ -184,7 +188,7 @@ const MenuClient = ({ items }: { items: MenuItem[] }) => {
                     <table className="w-full">
                         <thead>
                         <tr style={{ borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
-                            {['Plat', 'Catégorie', 'Prix', 'Disponible', 'Actions'].map(h => (
+                            {['Plat', 'Catégorie', 'Signature','Prix', 'Disponible', 'Actions'].map(h => (
                                 <th key={h} className="text-left px-6 py-4 text-xs tracking-widest uppercase font-light"
                                     style={{ color: 'rgba(250,248,245,0.3)' }}>
                                     {h}
@@ -227,6 +231,14 @@ const MenuClient = ({ items }: { items: MenuItem[] }) => {
                             style={{backgroundColor: 'rgba(201,169,110,0.1)', color: '#C9A96E'}}>
                         {item.category}
                       </span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {item.is_signature && (
+                                            <span className="text-xs tracking-widest uppercase font-light px-3 py-1 rounded-sm"
+                                                  style={{ backgroundColor: 'rgba(201,169,110,0.1)', color: '#C9A96E', border: '0.5px solid rgba(201,169,110,0.3)' }}>
+                                                Signature
+                                            </span>
+                                        )}
                                     </td>
                                     <td className="px-6 py-4 text-sm font-light" style={{color: '#FAF8F5'}}>
                                         €{item.price.toFixed(2)}
@@ -306,6 +318,29 @@ const MenuClient = ({ items }: { items: MenuItem[] }) => {
                             <option value="dessert">Dessert</option>
                             <option value="boisson">Boisson</option>
                         </select>
+                    </div>
+
+                    {/* Toggle Signature */}
+                    <div className="flex items-center justify-between py-3" style={{ borderTop: '0.5px solid #E0DDD7' }}>
+                        <div>
+                            <p className="text-xs tracking-widest uppercase font-light" style={{ color: '#C9A96E' }}>
+                                Signature du Chef
+                            </p>
+                            <p className="text-xs font-light mt-1" style={{ color: '#6B6560' }}>
+                                Mis en avant sur la carte publique
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setForm(prev => ({ ...prev, is_signature: !prev.is_signature }))}
+                            className="relative w-11 h-6 rounded-full transition-colors duration-300 flex-shrink-0"
+                            style={{ backgroundColor: form.is_signature ? '#C9A96E' : '#E0DDD7' }}
+                        >
+                            <span
+                                className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform duration-300"
+                                style={{ transform: form.is_signature ? 'translateX(20px)' : 'translateX(0)' }}
+                            />
+                        </button>
                     </div>
 
                     <div className="flex gap-4 mt-4">

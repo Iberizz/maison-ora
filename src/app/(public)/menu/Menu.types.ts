@@ -9,6 +9,7 @@ export type MenuItemRow = {
     category: MenuCategory
     image: string | null
     available: boolean
+    is_signature: boolean | null
     created_at: string | null
 }
 

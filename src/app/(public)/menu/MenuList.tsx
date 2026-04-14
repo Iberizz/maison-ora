@@ -75,7 +75,7 @@ export default function MenuList({ items, activeCategory, setActiveCategory }: M
             ? items
             : items.filter((i) => i.category === activeCategory)
 
-    const isSignature = (item: MenuItemRow) => item.price > 28
+    const isSignature = (item: MenuItemRow) => item.is_signature === true
 
     return (
         <section
